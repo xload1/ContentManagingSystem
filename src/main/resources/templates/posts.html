@@ -13,12 +13,12 @@
     <a href="/my_profile">my profile</a>
 </div>
 <!--temporal css-->
-<div th:each="post : ${posts}" style="border-radius: 5px; padding: 5px; border-width: 5px;display: flex; flex-direction: column;">
+<div th:each="post : ${posts}" style="padding: 5px;display: flex; flex-direction: column;">
     <h1 th:text="${post.getAuthor_username()}"></h1>
-    <span th:text="${post.getAuthor_username()}"></span>
+    <span th:text="${post.getAuthor_login()}"></span>
     <span th:text="${post.getDate()}"></span>
     <span th:text="${post.getText()}"></span>
-    <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="Cannot display image">
+    <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="Cannot display image" style="width: 500px; height: 500px">
     <span th:text="'tags: '+${post.getTags()}"></span>
 </div>
 </body>

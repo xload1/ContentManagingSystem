@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,8 +62,8 @@ public class MainController {
             try {
                 byte[] imageData = image.getBytes();
                 byte[] stretchedImageData = ImageManipulation.stretchImage(imageData, 500, 500);
-                postService.save(new Posts(text, stretchedImageData, tags, getLogin(request),
-                userService.findByLogin(getLogin(request)).getUsername(), LocalDateTime.now().toString()));
+                postService.save(new Posts(text, imageData, tags, getLogin(request),
+                userService.findByLogin(getLogin(request)).getUsername(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy"))));
             } catch (IOException e) {
                 uploadError = "Error while uploading image";
                 return "redirect:/upload";
