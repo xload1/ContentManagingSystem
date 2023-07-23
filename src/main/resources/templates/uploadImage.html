@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <a href="/posts">posts</a>
+    <a href="/upload">upload</a>
+    <a href="/login">login</a>
+    <a href="/register">register</a>
+    <a href="/my_profile">my profile</a>
+</div>
+<form enctype="multipart/form-data" action="/uploadImage" method="post">
+    <input type="text" name="text">
+    <input type="text" name="tags" placeholder="tags, divided by coma">
+    <input type="file" name="image">
+    <button type="submit">Upload</button>
+</form>
+<span th:text="${uploadError}"/>
+</body>
+</html>

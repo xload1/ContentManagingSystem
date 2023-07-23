@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <a href="/posts">posts</a>
+    <a href="/upload">upload</a>
+    <a href="/login">login</a>
+    <a href="/register">register</a>
+    <a href="/my_profile">my profile</a>
+</div>
+<!--temporal css-->
+<div th:each="post : ${posts}" style="border-radius: 5px; padding: 5px; border-width: 5px;display: flex; flex-direction: column;">
+    <h1 th:text="${post.getAuthor_username()}"></h1>
+    <span th:text="${post.getAuthor_username()}"></span>
+    <span th:text="${post.getDate()}"></span>
+    <span th:text="${post.getText()}"></span>
+    <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="Cannot display image">
+    <span th:text="'tags: '+${post.getTags()}"></span>
+</div>
+</body>
+</html>

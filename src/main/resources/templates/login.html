@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+  <a href="/posts">posts</a>
+  <a href="/upload">upload</a>
+  <a href="/login">login</a>
+  <a href="/register">register</a>
+  <a href="/my_profile">my profile</a>
+</div>
+<div>
+  <h1>Log in</h1>
+  <form action="/login/check" method="post">
+    <input type="text" name="login" placeholder="login" required>
+    <br/>
+    <input type="password" name="password" placeholder="password" required>
+    <br/>
+    <button type="submit">log in</button>
+  </form>
+  <span th:text="${loginError}"/>
+</div>
+</body>
+</html>
