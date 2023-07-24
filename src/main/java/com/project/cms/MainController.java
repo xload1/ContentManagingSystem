@@ -204,4 +204,22 @@ public class MainController {
         model.addAttribute("posts", postService.findPostsByLogin(user.getLogin()));
         return "profile";
     }
+    @GetMapping("posts/{id}")
+    public String post(@PathVariable int id, Model model, HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        Posts post = postService.findById(id);
+        model.addAttribute("post", post);
+        return "post";
+    }
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response){
+        Cookie loginCookie = new Cookie("login", "");
+        loginCookie.setMaxAge(0);
+        loginCookie.setPath("/");
+        response.addCookie(loginCookie);
+        loginError = "successfully logged out";
+        return "redirect:/login";
+    }
 }

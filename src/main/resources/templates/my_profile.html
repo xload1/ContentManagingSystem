@@ -25,6 +25,9 @@
     <br>
     <input type="submit" value="Save changes">
 </form>
+<form method="post" action="/logout">
+    <input type="submit" value="Logout">
+</form>
 <span th:text="${profileError}"/>
 <h1>My posts</h1>
 <div th:each="post : ${posts}"  style="padding: 5px;display: flex; flex-direction: column;">
@@ -32,6 +35,7 @@
     <span th:text="${post.getAuthor_login()}"></span>
     <span th:text="${post.getDate()}"></span>
     <span th:text="${post.getText()}"></span>
+    <a th:href="'/posts/'+${post.getPost_id}">view post</a>
     <span th:if="${post.hasImage()}">
     <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="" style="width: 500px; height: 500px">
     </span>

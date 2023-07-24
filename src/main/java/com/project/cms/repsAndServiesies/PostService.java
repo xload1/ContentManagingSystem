@@ -22,4 +22,7 @@ public class PostService {
     public List<Posts> findPostsByLogin(String login){
         return postRepository.findPostsByLogin(login);
     }
+    public Posts findById(int id){
+        return postRepository.findById(id).orElse(null);
+    }
 }
