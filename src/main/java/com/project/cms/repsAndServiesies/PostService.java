@@ -19,4 +19,7 @@ public class PostService {
     public List<Posts> findAll(){
         return postRepository.findAll();
     }
+    public List<Posts> findPostsByLogin(String login){
+        return postRepository.findPostsByLogin(login);
+    }
 }

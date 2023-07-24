@@ -12,7 +12,7 @@ import java.util.Base64;
 @Entity
 @Getter
 @Setter
-public class Posts {
+public class Posts implements Comparable<Posts> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int post_id;
@@ -37,5 +37,13 @@ public class Posts {
 
     public String convertToBase64() {
         return Base64.getEncoder().encodeToString(this.image);
+    }
+    public boolean hasImage() {
+        return this.image.length != 0;
+    }
+
+    @Override
+    public int compareTo(Posts post) {
+        return post.getPost_id() - this.getPost_id();
     }
 }

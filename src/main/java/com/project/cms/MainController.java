@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ public class MainController {
     String registerError = "";
     String loginError = "";
     String uploadError = "";
+    String profileError = "";
 
     @Autowired
     public MainController(PostService postService, UserService userService) {
@@ -54,14 +56,13 @@ public class MainController {
     @PostMapping("/uploadImage")
     public String uploadImageAction(@RequestParam String text, @RequestParam MultipartFile image,
                                     @RequestParam String tags, HttpServletRequest request) {
-        if (!image.isEmpty()) {
             if (!tags.matches("[a-zA-Z]+(?:[ ,][a-zA-Z]+)*$")) {
-                uploadError = "Tags should be a one english word written through a space or a coma";
+                uploadError = "Tags should be a one or more english words written through a space or a coma";
                 return "redirect:/upload";
             }
             try {
                 byte[] imageData = image.getBytes();
-                byte[] stretchedImageData = ImageManipulation.stretchImage(imageData, 500, 500);
+//                byte[] stretchedImageData = ImageManipulation.stretchImage(imageData, 500, 500);
                 postService.save(new Posts(text, imageData, tags, getLogin(request),
                 userService.findByLogin(getLogin(request)).getUsername(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy"))));
             } catch (IOException e) {
@@ -69,8 +70,6 @@ public class MainController {
                 return "redirect:/upload";
             }
             return "redirect:/posts";
-        }
-        return "redirect:/upload";
     }
 
     @GetMapping("/posts")
@@ -79,7 +78,7 @@ public class MainController {
             return "redirect:/login";
         }
         List<Posts> posts = postService.findAll();
-        Collections.reverse(posts);
+        Collections.sort(posts);
         model.addAttribute("posts", posts);
         return "posts";
     }
@@ -115,7 +114,7 @@ public class MainController {
             if (user.getPassword().equals(password)) {
                 loginError = "successfully logged in";
                 Cookie loginCookie = new Cookie("login", login);
-                loginCookie.setMaxAge(30 * 60);
+                loginCookie.setMaxAge(60 * 60);
                 loginCookie.setPath("/");
                 response.addCookie(loginCookie);
                 return "redirect:/login";
@@ -168,6 +167,41 @@ public class MainController {
         }
         Users user = userService.findByLogin(getLogin(request));
         model.addAttribute("user", user);
+        model.addAttribute("profileError", profileError);
+        model.addAttribute("posts", postService.findPostsByLogin(user.getLogin()));
         return "my_profile";
+    }
+    @PostMapping("/my_profile/save")
+    public String saveProfile(@RequestParam String username,
+                              @RequestParam String description,
+                              HttpServletRequest request){
+        Users user = userService.findByLogin(getLogin(request));
+        user.setUsername(username);
+        user.setDescription(description);
+        try {
+            userService.save(user);
+            profileError = "Profile saved";
+            postService.findPostsByLogin(user.getLogin()).forEach(post -> {
+                post.setAuthor_username(username);
+                postService.save(post);
+            });
+        } catch (Exception e){
+            profileError = "Description must be less than 300 characters long," +
+                    " and username must be less than 50 characters long";
+        }
+        return "redirect:/my_profile";
+    }
+    @GetMapping("/profile/{login}")
+    public String profile(@PathVariable String login, Model model, HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        if(getLogin(request).equals(login)){
+            return "redirect:/my_profile";
+        }
+        Users user = userService.findByLogin(login);
+        model.addAttribute("user", user);
+        model.addAttribute("posts", postService.findPostsByLogin(user.getLogin()));
+        return "profile";
     }
 }

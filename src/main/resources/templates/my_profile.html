@@ -12,11 +12,23 @@
     <a href="/register">register</a>
     <a href="/my_profile">my profile</a>
 </div>
-<!--temporal css-->
+<form method="post" action="my_profile/save">
+    <label>
+        Username: <br/>
+        <input type="text" name="username" th:value="${user.getUsername()}">
+    </label>
+    <br/>
+    <label>
+        Profile description: <br/>
+        <input type="text" name="description" th:value="${user.getDescription()}">
+    </label>
+    <br>
+    <input type="submit" value="Save changes">
+</form>
+<span th:text="${profileError}"/>
+<h1>My posts</h1>
 <div th:each="post : ${posts}"  style="padding: 5px;display: flex; flex-direction: column;">
-    <a th:href="'posts/'+${post.getPost_id}" style="text-decoration: none;">
-        <div>
-    <a th:href="'profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a>
+    <h1 th:text="${post.getAuthor_username()}"></h1>
     <span th:text="${post.getAuthor_login()}"></span>
     <span th:text="${post.getDate()}"></span>
     <span th:text="${post.getText()}"></span>
@@ -25,8 +37,6 @@
     </span>
     <span th:unless="${post.hasImage()}"></span>
     <span th:text="'tags: '+${post.getTags()}"></span>
-        </div>
-    </a>
 </div>
 </body>
 </html>
