@@ -10,18 +10,16 @@
     <a th:href="'/profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a>
     <span th:text="${post.getAuthor_login()}"></span>
     <span th:text="${post.getDate()}"></span>
-    <span th:text="${post.getText()}"></span>
+    <form th:action="'/posts/'+${post.getPost_id()}+'/edit/save'" method="post" enctype="multipart/form-data">
+        <input type="text" th:value="${post.getText()}" name="text">
+        <span>new image: </span>
+        <input type="file" name="image">
+        <input type="submit" value="save">
+    </form>
     <span th:if="${post.hasImage()}">
                 <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="">
             </span>
     <span th:text="'tags: '+${post.getTags()}"></span>
-    <a th:if="${post.getAuthor_login()==currentUser.getLogin()}" th:href="'/posts/'+${post.getPost_id()}+'/edit'">edit
-        post</a>
-    <form th:if="${post.getAuthor_login()==currentUser.getLogin() || currentUser.isAdmin()}"
-          th:action="'/posts/'+${post.getPost_id()}+'/delete'"
-          method="post">
-        <input type="submit" value="delete post"/>
-    </form>
 </div>
 </body>
 </html>

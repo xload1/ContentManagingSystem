@@ -14,17 +14,16 @@
 <span th:text="'Description: '+${user.getDescription()}"/>
 <br>
 <h1>Posts: </h1>
-<div th:each="post : ${posts}"  style="padding: 5px;display: flex; flex-direction: column;">
-  <a th:href="'/profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a>
-  <span th:text="${post.getAuthor_login()}"></span>
-  <span th:text="${post.getDate()}"></span>
-  <span th:text="${post.getText()}"></span>
-  <a th:href="'/posts/'+${post.getPost_id}">view post</a>
-  <span th:if="${post.hasImage()}">
+<div th:each="post : ${posts}" style="padding: 5px;display: flex; flex-direction: column;">
+    <a th:href="'/profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a>
+    <span th:text="${post.getAuthor_login()}"></span>
+    <span th:text="${post.getDate()}"></span>
+    <span th:text="${post.getText()}"></span>
+    <a th:href="'/posts/'+${post.getPost_id}">view post</a>
+    <span th:if="${post.hasImage()}">
     <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="" style="width: 500px; height: 500px">
     </span>
-  <span th:unless="${post.hasImage()}"></span>
-  <span th:text="'tags: '+${post.getTags()}"></span>
+    <span th:text="'tags: '+${post.getTags()}"></span>
 </div>
 </body>
 </html>

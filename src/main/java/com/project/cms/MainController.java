@@ -211,6 +211,7 @@ public class MainController {
         }
         Posts post = postService.findById(id);
         model.addAttribute("post", post);
+        model.addAttribute("currentUser",userService.findByLogin(getLogin(request)));
         return "post";
     }
     @PostMapping("/logout")
@@ -221,5 +222,43 @@ public class MainController {
         response.addCookie(loginCookie);
         loginError = "successfully logged out";
         return "redirect:/login";
+    }
+    @GetMapping("posts/{id}/edit")
+    public String editPost(@PathVariable int id, Model model, HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        model.addAttribute("post", postService.findById(id));
+        return "edit_post";
+    }
+    @PostMapping("posts/{id}/edit/save")
+    public String saveEditedPost(@PathVariable int id,
+                                 @RequestParam String text,
+
+                                 @RequestParam(required = false) MultipartFile image,
+                                 HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        Posts post = postService.findById(id);
+        if(!image.isEmpty()){
+            try {
+                byte[] imageData = image.getBytes();
+                post.setImage(imageData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        post.setText(text + " (edited)");;
+        postService.save(post);
+        return "redirect:/posts/"+id;
+    }
+    @PostMapping("posts/{id}/delete")
+    public String deletePost(@PathVariable int id, HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        postService.deleteById(id);
+        return "redirect:/my_profile";
     }
 }

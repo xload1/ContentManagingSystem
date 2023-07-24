@@ -19,8 +19,8 @@ public class Users {
     String description;
     boolean rewarded;
     int rewards;
-    String role;
-    String user_status;
+    boolean admin;
+    boolean banned;
 
     public Users(String login, String password) {
         this.login = login;
@@ -29,8 +29,8 @@ public class Users {
         description = "No description yet.";
         rewarded = false;
         rewards = 0;
-        role = "basic";
-        user_status = "normal";
+        admin = false;
+        banned = false;
     }
 
 }
