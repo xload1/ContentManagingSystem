@@ -313,5 +313,12 @@ public class MainController {
         userService.save(user);
         return "redirect:/profile/"+login;
     }
-
+    @GetMapping("search")
+    public String search(@RequestParam String tags, Model model, HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        model.addAttribute("posts", postService.findPostsByTags(tags));
+        return "search";
+    }
 }

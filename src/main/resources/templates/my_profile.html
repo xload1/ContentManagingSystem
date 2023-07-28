@@ -11,6 +11,7 @@
     <a href="/login">login</a>
     <a href="/register">register</a>
     <a href="/my_profile">my profile</a>
+    <a href="/search?tags=">search</a>
 </div>
 <form method="post" action="my_profile/save">
     <label>
@@ -22,6 +23,7 @@
         Profile description: <br/>
         <input type="text" name="description" th:value="${user.getDescription()}">
     </label>
+    <br>
     <span th:text="'My rewards: ' + ${user.getRewards()}"/>
     <br>
     <input type="submit" value="Save changes">

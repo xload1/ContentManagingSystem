@@ -23,12 +23,14 @@
         <input type="submit" value="delete post"/>
     </form>
 </div>
+<div th:if="${!currentUser.isBanned()}">
     <h1 th:text="'Write comment as '+${currentUser.getUsername()}"/>
     <form th:action="'/posts/'+${post.getPost_id()}+'/comment'" method="post">
         <textarea name="text" id="text" cols="30" rows="2"></textarea>
         <p th:text="${commentError}"/>
         <input type="submit" value="comment"/>
     </form>
+</div>
 <br>
 <div  th:each="comment : ${comments}">
     <span th:text="${comment.getWriter_username()} + '  '" style="font-weight: bold"/>
