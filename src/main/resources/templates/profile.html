@@ -13,6 +13,23 @@
 <br>
 <span th:text="'Description: '+${user.getDescription()}"/>
 <br>
+<span th:text="'Rewards: '+${user.getRewards()}"/>
+<br>
+<form th:action="'/profile/'+${user.getLogin()}+'/reward'" id="rewardForm" method="post" th:if="${!currentUser.isRewarded()}">
+<input type="submit" value="reward this user">
+</form>
+<form th:unless="${!currentUser.isRewarded()}">
+    <span th:text="'You already rewarded a user'"/>
+</form>
+<script>
+    document.getElementById("rewardForm").onsubmit = function() {
+        return confirm("You can reward a user only once. Are you sure?");
+    };
+</script>
+<form th:if="${currentUser.isAdmin()&&!user.isBanned()}" method="post" th:action="'/profile/'+${user.getLogin()}+'/ban'">
+    <input type="submit" value="ban this user">
+</form>
+<span th:if="${user.isBanned()}" th:text="'This user is banned'"/>
 <h1>Posts: </h1>
 <div th:each="post : ${posts}" style="padding: 5px;display: flex; flex-direction: column;">
     <a th:href="'/profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a>

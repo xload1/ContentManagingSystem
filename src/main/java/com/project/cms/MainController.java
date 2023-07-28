@@ -1,8 +1,10 @@
 package com.project.cms;
 
+import com.project.cms.entities.Comments;
 import com.project.cms.entities.Posts;
 import com.project.cms.entities.Users;
 import com.project.cms.other.ImageManipulation;
+import com.project.cms.repsAndServiesies.CommentRepository;
 import com.project.cms.repsAndServiesies.PostService;
 import com.project.cms.repsAndServiesies.UserService;
 import jakarta.servlet.http.Cookie;
@@ -28,15 +30,18 @@ import java.util.List;
 public class MainController {
     PostService postService;
     UserService userService;
+    CommentRepository commentRepository;
     String registerError = "";
     String loginError = "";
     String uploadError = "";
     String profileError = "";
+    String commentError = "";
 
     @Autowired
-    public MainController(PostService postService, UserService userService) {
+    public MainController(PostService postService, UserService userService, CommentRepository commentRepository) {
         this.postService = postService;
         this.userService = userService;
+        this.commentRepository = commentRepository;
     }
 
     @GetMapping("/")
@@ -50,6 +55,7 @@ public class MainController {
             return "redirect:/login";
         }
         model.addAttribute("uploadError", uploadError);
+        model.addAttribute("currentUser", userService.findByLogin(getLogin(request)));
         return "uploadImage";
     }
 
@@ -64,7 +70,7 @@ public class MainController {
                 byte[] imageData = image.getBytes();
 //                byte[] stretchedImageData = ImageManipulation.stretchImage(imageData, 500, 500);
                 postService.save(new Posts(text, imageData, tags, getLogin(request),
-                userService.findByLogin(getLogin(request)).getUsername(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy"))));
+                userService.findByLogin(getLogin(request)).getUsername()));
             } catch (IOException e) {
                 uploadError = "Error while uploading image";
                 return "redirect:/upload";
@@ -202,6 +208,7 @@ public class MainController {
         Users user = userService.findByLogin(login);
         model.addAttribute("user", user);
         model.addAttribute("posts", postService.findPostsByLogin(user.getLogin()));
+        model.addAttribute("currentUser",userService.findByLogin(getLogin(request)));
         return "profile";
     }
     @GetMapping("posts/{id}")
@@ -212,7 +219,24 @@ public class MainController {
         Posts post = postService.findById(id);
         model.addAttribute("post", post);
         model.addAttribute("currentUser",userService.findByLogin(getLogin(request)));
+        model.addAttribute("commentError", commentError);
+        List<Comments> comments = commentRepository.findCommentsByPost_id(id);
+        Collections.sort(comments);
+        model.addAttribute("comments", comments);
         return "post";
+    }
+    @PostMapping("profile/{login}/reward")
+    public String reward(@PathVariable String login, HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        Users user = userService.findByLogin(login);
+        user.setRewards(user.getRewards()+1);
+        userService.save(user);
+        Users currentUser = userService.findByLogin(getLogin(request));
+        currentUser.setRewarded(true);
+        userService.save(currentUser);
+        return "redirect:/profile/"+login;
     }
     @PostMapping("/logout")
     public String logout(HttpServletResponse response){
@@ -261,4 +285,33 @@ public class MainController {
         postService.deleteById(id);
         return "redirect:/my_profile";
     }
+    @PostMapping("posts/{id}/comment")
+    public String comment(@PathVariable int id,
+                          @RequestParam String text,
+                          HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        if(text.length() > 300){
+            commentError = "Comment must be less than 300 characters long";
+            return "redirect:/posts/"+id;
+        } else if(text.length() < 1){
+            commentError = "Comment must be at least 1 character long";
+            return "redirect:/posts/"+id;
+        }
+        commentRepository.save(new Comments(id, getLogin(request), userService.findByLogin(getLogin(request)).getUsername(), text));
+        commentError = "Comment added";
+        return "redirect:/posts/"+id;
+    }
+    @PostMapping("profile/{login}/ban")
+    public String ban(@PathVariable String login, HttpServletRequest request){
+        if (getLogin(request).equals("")) {
+            return "redirect:/login";
+        }
+        Users user = userService.findByLogin(login);
+        user.setBanned(true);
+        userService.save(user);
+        return "redirect:/profile/"+login;
+    }
+
 }

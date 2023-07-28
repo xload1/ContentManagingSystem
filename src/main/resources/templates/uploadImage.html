@@ -12,11 +12,14 @@
     <a href="/register">register</a>
     <a href="/my_profile">my profile</a>
 </div>
-<form enctype="multipart/form-data" action="/uploadImage" method="post">
+<form enctype="multipart/form-data" action="/uploadImage" method="post" th:if="${!currentUser.isBanned()}">
     <input type="text" name="text">
     <input type="text" name="tags" placeholder="tags, divided by coma">
     <input type="file" name="image">
     <button type="submit">Upload</button>
+</form>
+<form th:unless="${!currentUser.isBanned()}">
+    <span>You are banned and cannot upload</span>
 </form>
 <span th:text="${uploadError}"/>
 </body>

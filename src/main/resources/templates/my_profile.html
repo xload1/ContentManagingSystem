@@ -22,6 +22,7 @@
         Profile description: <br/>
         <input type="text" name="description" th:value="${user.getDescription()}">
     </label>
+    <span th:text="'My rewards: ' + ${user.getRewards()}"/>
     <br>
     <input type="submit" value="Save changes">
 </form>

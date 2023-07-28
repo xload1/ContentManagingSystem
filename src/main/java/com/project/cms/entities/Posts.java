@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
 @Entity
@@ -23,13 +25,13 @@ public class Posts implements Comparable<Posts> {
     String author_login;
     String author_username;
     String date;
-    public Posts(String text, byte[] image, String tags, String author_login, String author_username, String date) {
+    public Posts(String text, byte[] image, String tags, String author_login, String author_username) {
         this.text = text;
         this.image = image;
         this.tags = tags;
         this.author_login = author_login;
         this.author_username = author_username;
-        this.date = date;
+        this.date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy"));
     }
 
     public Posts() {
