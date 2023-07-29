@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheet.css">
 </head>
 <body>
-<div style="padding: 5px; display: flex; flex-direction: column;">
-    <a href="/posts">BACK</a>
-    <a th:href="'/profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a>
-    <span th:text="${post.getAuthor_login()}"></span>
-    <span th:text="${post.getDate()}"></span>
-    <span th:text="${post.getText()}"></span>
+<div>
+    <a href="/posts">BACK</a><br>
+    <a th:href="'/profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a><br>
+    <span th:text="${post.getAuthor_login()}"></span><br>
+    <span th:text="${post.getDate()}"></span><br>
+    <span th:text="${post.getText()}"></span><br>
     <span th:if="${post.hasImage()}">
-                <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="">
+                <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt=""><br>
             </span>
-    <span th:text="'tags: '+${post.getTags()}"></span>
+    <span th:text="'tags: '+${post.getTags()}"></span><br>
     <a th:if="${post.getAuthor_login()==currentUser.getLogin()}" th:href="'/posts/'+${post.getPost_id()}+'/edit'">edit
-        post</a>
+        post</a><br>
     <form th:if="${post.getAuthor_login()==currentUser.getLogin() || currentUser.isAdmin()}"
           th:action="'/posts/'+${post.getPost_id()}+'/delete'"
           method="post">
-        <input type="submit" value="delete post"/>
+        <input type="submit" value="delete post"/><br>
     </form>
 </div>
 <div th:if="${!currentUser.isBanned()}">
@@ -32,7 +33,7 @@
     </form>
 </div>
 <br>
-<div  th:each="comment : ${comments}">
+<div th:each="comment : ${comments}">
     <span th:text="${comment.getWriter_username()} + '  '" style="font-weight: bold"/>
     <span th:text="${comment.getDate()}"></span>
     <br>

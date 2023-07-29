@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheet.css">
 </head>
 <body>
 <div>
@@ -14,10 +15,10 @@
     <a href="/search?tags=">search</a>
 </div>
 <form enctype="multipart/form-data" action="/uploadImage" method="post" th:if="${!currentUser.isBanned()}">
-    <input type="text" name="text">
-    <input type="text" name="tags" placeholder="tags, divided by coma">
-    <input type="file" name="image">
-    <button type="submit">Upload</button>
+    <textarea  name="text" placeholder="your text in the post" cols="60" rows="3"></textarea><br>
+    <input type="text" name="tags" placeholder="tags, divided by coma"><br>
+    <input type="file" name="image"><br>
+    <button type="submit">Upload</button><br>
 </form>
 <form th:unless="${!currentUser.isBanned()}">
     <span>You are banned and cannot upload</span>
