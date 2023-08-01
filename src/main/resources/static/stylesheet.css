@@ -16,21 +16,18 @@ div{
     border: 2px solid #333;
     padding: 6px 12px;
     border-radius: 5px;
-    display: inline-block;
+    margin: 5px;
+    width: fit-content;
 }
 
 a:hover, button:hover, input[type="submit"]:hover, input[type="file"]:hover {
     background-color: #333;
     color: #fff;
 }
-
-
-input[type="submit"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    outline: none;
-    border: none;
+.text{
+    word-wrap: break-word;
+    max-width: 500px;
+    display: inline-block;
 }
 h1 {
     margin: 0;

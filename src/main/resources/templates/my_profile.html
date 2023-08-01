@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>CMS</title>
     <link rel="stylesheet" type="text/css" href="/stylesheet.css">
 </head>
 <body>
@@ -38,7 +38,7 @@
     <h1 th:text="${post.getAuthor_username()}"></h1><br>
     <span th:text="${post.getAuthor_login()}"></span><br>
     <span th:text="${post.getDate()}"></span><br>
-    <span th:text="${post.getText()}"></span><br>
+    <span th:text="${post.getText()}" class="text"></span><br>
     <a th:href="'/posts/'+${post.getPost_id}">view post</a><br>
     <span th:if="${post.hasImage()}">
     <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt="" style="width: 500px; height: 500px"><br>

@@ -2,11 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>CMS</title>
     <link rel="stylesheet" type="text/css" href="/stylesheet.css">
 </head>
 <body>
-
 <div>
     <a href="/posts">posts</a>
     <a href="/upload">upload</a>
@@ -19,7 +18,7 @@
     <a th:href="'/profile/'+${post.getAuthor_login()}"><h1 th:text="${post.getAuthor_username()}"></h1></a><br>
     <span th:text="${post.getAuthor_login()}"></span><br>
     <span th:text="${post.getDate()}"></span><br>
-    <span th:text="${post.getText()}"></span><br>
+    <span th:text="${post.getText()}" class="text"></span><br>
     <a th:href="'/posts/'+${post.getPost_id}">view post</a><br>
     <span th:if="${post.hasImage()}">
                 <img th:src="'data:image/jpeg;base64,' + ${post.convertToBase64()}" alt=""
@@ -27,6 +26,5 @@
             </span>
     <span th:text="'tags: '+${post.getTags()}"></span><br>
 </div>
-
 </body>
 </html>

@@ -3,7 +3,6 @@ package com.project.cms;
 import com.project.cms.entities.Comments;
 import com.project.cms.entities.Posts;
 import com.project.cms.entities.Users;
-import com.project.cms.other.ImageManipulation;
 import com.project.cms.repsAndServiesies.CommentRepository;
 import com.project.cms.repsAndServiesies.PostService;
 import com.project.cms.repsAndServiesies.UserService;
@@ -20,9 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,7 +64,6 @@ public class MainController {
             }
             try {
                 byte[] imageData = image.getBytes();
-//                byte[] stretchedImageData = ImageManipulation.stretchImage(imageData, 500, 500);
                 postService.save(new Posts(text, imageData, tags, getLogin(request),
                 userService.findByLogin(getLogin(request)).getUsername()));
             } catch (IOException e) {
@@ -83,9 +78,7 @@ public class MainController {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
-        List<Posts> posts = postService.findAll();
-        Collections.sort(posts);
-        model.addAttribute("posts", posts);
+        model.addAttribute("posts", postService.findAll());
         return "posts";
     }
 
@@ -273,7 +266,7 @@ public class MainController {
                 e.printStackTrace();
             }
         }
-        post.setText(text + " (edited)");;
+        post.setText(text + " (edited)");
         postService.save(post);
         return "redirect:/posts/"+id;
     }

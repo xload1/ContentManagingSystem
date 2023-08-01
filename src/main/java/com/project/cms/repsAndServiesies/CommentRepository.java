@@ -1,7 +1,6 @@
 package com.project.cms.repsAndServiesies;
 
 import com.project.cms.entities.Comments;
-import com.project.cms.entities.Posts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

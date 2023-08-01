@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,11 +22,15 @@ public class PostService {
     }
 
     public List<Posts> findAll() {
-        return postRepository.findAll();
+        List<Posts> posts = postRepository.findAll();
+        Collections.sort(posts);
+        return posts;
     }
 
     public List<Posts> findPostsByLogin(String login) {
-        return postRepository.findPostsByLogin(login);
+        List<Posts> posts = postRepository.findPostsByLogin(login);
+        Collections.sort(posts);
+        return posts;
     }
 
     public Posts findById(int id) {
@@ -39,7 +44,7 @@ public class PostService {
     public List<Posts> findPostsByTags(String tags) {
         List<Posts> posts = new ArrayList<>();
         if (tags.equals(""))
-            return postRepository.findAll();
+            return findAll();
         String[] tagsArray = tags.split(" ");
         for (String tag : tagsArray) {
             for (Posts post : postRepository.findAll()) {
@@ -49,6 +54,7 @@ public class PostService {
                 }
             }
         }
+        Collections.sort(posts);
         return posts;
     }
 }

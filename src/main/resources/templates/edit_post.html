@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>CMS</title>
     <link rel="stylesheet" type="text/css" href="/stylesheet.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
     <span th:text="${post.getAuthor_login()}"></span><br>
     <span th:text="${post.getDate()}"></span><br>
     <form th:action="'/posts/'+${post.getPost_id()}+'/edit/save'" method="post" enctype="multipart/form-data">
-        <input type="text" th:value="${post.getText()}" name="text">
+        <textarea th:value="${post.getText()}" name="text" cols="60" rows="3"></textarea><br>
         <span>new image: </span>
         <input type="file" name="image">
         <input type="submit" value="save">
