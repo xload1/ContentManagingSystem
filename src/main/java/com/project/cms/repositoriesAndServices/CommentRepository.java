@@ -1,4 +1,4 @@
-package com.project.cms.repsAndServiesies;
+package com.project.cms.repositoriesAndServices;
 
 import com.project.cms.entities.Comments;
 import org.springframework.data.jpa.repository.JpaRepository;

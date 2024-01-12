@@ -1,4 +1,4 @@
-package com.project.cms.repsAndServiesies;
+package com.project.cms.repositoriesAndServices;
 
 import com.project.cms.entities.Posts;
 import org.springframework.beans.factory.annotation.Autowired;

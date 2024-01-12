@@ -3,9 +3,9 @@ package com.project.cms;
 import com.project.cms.entities.Comments;
 import com.project.cms.entities.Posts;
 import com.project.cms.entities.Users;
-import com.project.cms.repsAndServiesies.CommentRepository;
-import com.project.cms.repsAndServiesies.PostService;
-import com.project.cms.repsAndServiesies.UserService;
+import com.project.cms.repositoriesAndServices.CommentRepository;
+import com.project.cms.repositoriesAndServices.PostService;
+import com.project.cms.repositoriesAndServices.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,19 +58,19 @@ public class MainController {
     @PostMapping("/uploadImage")
     public String uploadImageAction(@RequestParam String text, @RequestParam MultipartFile image,
                                     @RequestParam String tags, HttpServletRequest request) {
-            if (!tags.matches("[a-zA-Z]+(?:[ ,][a-zA-Z]+)*$")) {
-                uploadError = "Tags should be a one or more english words written through a space or a coma";
-                return "redirect:/upload";
-            }
-            try {
-                byte[] imageData = image.getBytes();
-                postService.save(new Posts(text, imageData, tags, getLogin(request),
-                userService.findByLogin(getLogin(request)).getUsername()));
-            } catch (IOException e) {
-                uploadError = "Error while uploading image";
-                return "redirect:/upload";
-            }
-            return "redirect:/posts";
+        if (!tags.matches("[a-zA-Z]+(?:[ ,][a-zA-Z]+)*$")) {
+            uploadError = "Tags should be a one or more english words written through a space or a coma";
+            return "redirect:/upload";
+        }
+        try {
+            byte[] imageData = image.getBytes();
+            postService.save(new Posts(text, imageData, tags, getLogin(request),
+                    userService.findByLogin(getLogin(request)).getUsername()));
+        } catch (IOException e) {
+            uploadError = "Error while uploading image";
+            return "redirect:/upload";
+        }
+        return "redirect:/posts";
     }
 
     @GetMapping("/posts")
@@ -128,7 +128,6 @@ public class MainController {
 
     @PostMapping("/register/check")
     public String registerCheck(@RequestParam String login, @RequestParam String password, HttpServletResponse response) {
-
         if (userService.findByLogin(login) == null) {
             if (password.length() >= 8) {
                 if (login.matches("[a-z0-9]+")) {
@@ -170,10 +169,11 @@ public class MainController {
         model.addAttribute("posts", postService.findPostsByLogin(user.getLogin()));
         return "my_profile";
     }
+
     @PostMapping("/my_profile/save")
     public String saveProfile(@RequestParam String username,
                               @RequestParam String description,
-                              HttpServletRequest request){
+                              HttpServletRequest request) {
         Users user = userService.findByLogin(getLogin(request));
         user.setUsername(username);
         user.setDescription(description);
@@ -184,55 +184,59 @@ public class MainController {
                 post.setAuthor_username(username);
                 postService.save(post);
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             profileError = "Description must be less than 300 characters long," +
                     " and username must be less than 50 characters long";
         }
         return "redirect:/my_profile";
     }
+
     @GetMapping("/profile/{login}")
-    public String profile(@PathVariable String login, Model model, HttpServletRequest request){
+    public String profile(@PathVariable String login, Model model, HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
-        if(getLogin(request).equals(login)){
+        if (getLogin(request).equals(login)) {
             return "redirect:/my_profile";
         }
         Users user = userService.findByLogin(login);
         model.addAttribute("user", user);
         model.addAttribute("posts", postService.findPostsByLogin(user.getLogin()));
-        model.addAttribute("currentUser",userService.findByLogin(getLogin(request)));
+        model.addAttribute("currentUser", userService.findByLogin(getLogin(request)));
         return "profile";
     }
+
     @GetMapping("posts/{id}")
-    public String post(@PathVariable int id, Model model, HttpServletRequest request){
+    public String post(@PathVariable int id, Model model, HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
         Posts post = postService.findById(id);
         model.addAttribute("post", post);
-        model.addAttribute("currentUser",userService.findByLogin(getLogin(request)));
+        model.addAttribute("currentUser", userService.findByLogin(getLogin(request)));
         model.addAttribute("commentError", commentError);
         List<Comments> comments = commentRepository.findCommentsByPost_id(id);
         Collections.sort(comments);
         model.addAttribute("comments", comments);
         return "post";
     }
+
     @PostMapping("profile/{login}/reward")
-    public String reward(@PathVariable String login, HttpServletRequest request){
+    public String reward(@PathVariable String login, HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
         Users user = userService.findByLogin(login);
-        user.setRewards(user.getRewards()+1);
+        user.setRewards(user.getRewards() + 1);
         userService.save(user);
         Users currentUser = userService.findByLogin(getLogin(request));
         currentUser.setRewarded(true);
         userService.save(currentUser);
-        return "redirect:/profile/"+login;
+        return "redirect:/profile/" + login;
     }
+
     @PostMapping("/logout")
-    public String logout(HttpServletResponse response){
+    public String logout(HttpServletResponse response) {
         Cookie loginCookie = new Cookie("login", "");
         loginCookie.setMaxAge(0);
         loginCookie.setPath("/");
@@ -240,25 +244,27 @@ public class MainController {
         loginError = "successfully logged out";
         return "redirect:/login";
     }
+
     @GetMapping("posts/{id}/edit")
-    public String editPost(@PathVariable int id, Model model, HttpServletRequest request){
+    public String editPost(@PathVariable int id, Model model, HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
         model.addAttribute("post", postService.findById(id));
         return "edit_post";
     }
+
     @PostMapping("posts/{id}/edit/save")
     public String saveEditedPost(@PathVariable int id,
                                  @RequestParam String text,
 
                                  @RequestParam(required = false) MultipartFile image,
-                                 HttpServletRequest request){
+                                 HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
         Posts post = postService.findById(id);
-        if(!image.isEmpty()){
+        if (!image.isEmpty()) {
             try {
                 byte[] imageData = image.getBytes();
                 post.setImage(imageData);
@@ -268,46 +274,50 @@ public class MainController {
         }
         post.setText(text + " (edited)");
         postService.save(post);
-        return "redirect:/posts/"+id;
+        return "redirect:/posts/" + id;
     }
+
     @PostMapping("posts/{id}/delete")
-    public String deletePost(@PathVariable int id, HttpServletRequest request){
+    public String deletePost(@PathVariable int id, HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
         postService.deleteById(id);
         return "redirect:/my_profile";
     }
+
     @PostMapping("posts/{id}/comment")
     public String comment(@PathVariable int id,
                           @RequestParam String text,
-                          HttpServletRequest request){
+                          HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
-        if(text.length() > 300){
+        if (text.length() > 300) {
             commentError = "Comment must be less than 300 characters long";
-            return "redirect:/posts/"+id;
-        } else if(text.length() < 1){
+            return "redirect:/posts/" + id;
+        } else if (text.length() < 1) {
             commentError = "Comment must be at least 1 character long";
-            return "redirect:/posts/"+id;
+            return "redirect:/posts/" + id;
         }
         commentRepository.save(new Comments(id, getLogin(request), userService.findByLogin(getLogin(request)).getUsername(), text));
         commentError = "Comment added";
-        return "redirect:/posts/"+id;
+        return "redirect:/posts/" + id;
     }
+
     @PostMapping("profile/{login}/ban")
-    public String ban(@PathVariable String login, HttpServletRequest request){
+    public String ban(@PathVariable String login, HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
         Users user = userService.findByLogin(login);
         user.setBanned(true);
         userService.save(user);
-        return "redirect:/profile/"+login;
+        return "redirect:/profile/" + login;
     }
+
     @GetMapping("search")
-    public String search(@RequestParam String tags, Model model, HttpServletRequest request){
+    public String search(@RequestParam String tags, Model model, HttpServletRequest request) {
         if (getLogin(request).equals("")) {
             return "redirect:/login";
         }
